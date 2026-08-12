@@ -1,0 +1,35 @@
+{
+  "badges": {
+    "beta_tester": {
+      "description": "Participante dos testes oficiais do Halla",
+      "icon": "icons/beta_tester.png",
+      "iconSha256": "f1ebe6a3fc16cf79219d4488613819970b05304013bb3622e94047d8bf3c6853",
+      "name": "Beta Tester",
+      "priority": 50
+    },
+    "dev": {
+      "description": "Desenvolvedor oficial do Halla",
+      "icon": "icons/dev.png",
+      "iconSha256": "03e5a3d642ea790f8880aa995631cf8ca4880c5d603dd597fd4d771854ae9a97",
+      "name": "Desenvolvedor",
+      "priority": 100
+    },
+    "donator": {
+      "description": "Apoiador do projeto Halla",
+      "icon": "icons/donator.png",
+      "iconSha256": "7bfecee820f5746053068e1a6154af5d9255833650064166fee15f5832cab63b",
+      "name": "Apoiador",
+      "priority": 40
+    },
+    "founder": {
+      "description": "Fundador do projeto Halla",
+      "icon": "icons/founder.png",
+      "iconSha256": "c75ece49008df9878101be952d6d9895b896cf67cf6e7f4c74841585818f8a8b",
+      "name": "Fundador",
+      "priority": 90
+    }
+  },
+  "updatedAt": "2026-08-12T00:00:00Z",
+  "users": {},
+  "version": 1
+}

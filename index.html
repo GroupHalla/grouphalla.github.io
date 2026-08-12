@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Halla — Registro oficial de emblemas</title>
+  <style>
+    :root{font-family:Inter,system-ui,sans-serif;color:#f8fafc;background:#090814}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at top,#292152 0,#090814 48%)}main{width:min(880px,calc(100% - 32px));margin:40px auto}.panel{background:#111020e8;border:1px solid #312e55;border-radius:22px;padding:28px;box-shadow:0 24px 80px #0008}h1{margin:0 0 8px;font-size:clamp(28px,5vw,48px)}p{color:#b8b5d6;line-height:1.6}.status{display:inline-flex;gap:8px;align-items:center;color:#86efac;background:#052e1b;border:1px solid #166534;border-radius:999px;padding:7px 12px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:24px}.badge{background:#18162c;border:1px solid #36315b;border-radius:16px;padding:16px;display:flex;gap:12px;align-items:center}.badge img{width:42px;height:42px}.badge strong{display:block}.badge small{display:block;color:#9f9bbd;margin-top:4px}code{color:#c4b5fd}a{color:#a78bfa}</style>
+</head>
+<body><main><section class="panel">
+  <span class="status">● Registro disponível</span>
+  <h1>Emblemas oficiais do Halla</h1>
+  <p>Este domínio publica o registro assinado usado pelos clientes Halla. Os emblemas são estritamente visuais e não concedem permissões em servidores.</p>
+  <div id="badges" class="grid" aria-live="polite"></div>
+  <p>Manifesto: <a href="/badges/v1/badges.json"><code>/badges/v1/badges.json</code></a></p>
+</section></main>
+<script>
+fetch('/badges/v1/badges.json').then(r=>r.json()).then(data=>{
+ const root=document.getElementById('badges');
+ Object.entries(data.badges).sort((a,b)=>b[1].priority-a[1].priority).forEach(([id,b])=>{
+  const el=document.createElement('div');el.className='badge';
+  const img=document.createElement('img');img.src='/badges/v1/'+b.icon;img.alt='';
+  const text=document.createElement('div');const strong=document.createElement('strong');strong.textContent=b.name;
+  const small=document.createElement('small');small.textContent=b.description;
+  text.append(strong,small);el.append(img,text);root.append(el);
+ });
+}).catch(()=>{document.getElementById('badges').textContent='Registro temporariamente indisponível.'});
+</script></body></html>

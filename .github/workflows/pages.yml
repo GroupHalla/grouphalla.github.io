@@ -1,0 +1,68 @@
+name: Validate, sign and deploy badge registry
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Validate registry inputs
+        run: python3 tools/validate_badges.py
+
+      - name: Sign exact manifest bytes
+        env:
+          BADGES_PRIVATE_KEY: ${{ secrets.BADGES_SIGNING_PRIVATE_KEY_PEM }}
+        run: |
+          test -n "$BADGES_PRIVATE_KEY"
+          key="$RUNNER_TEMP/badges-private.pem"
+          signature="$RUNNER_TEMP/badges-signature.bin"
+          printf '%s' "$BADGES_PRIVATE_KEY" > "$key"
+          chmod 600 "$key"
+          openssl pkey -in "$key" -pubout -out "$RUNNER_TEMP/derived-public.pem"
+          cmp "$RUNNER_TEMP/derived-public.pem" badges/v1/signing-public-key.pem
+          openssl pkeyutl -sign -rawin -inkey "$key" \
+            -in badges/v1/badges.json -out "$signature"
+          base64 -w0 "$signature" > badges/v1/badges.json.sig
+          printf '\n' >> badges/v1/badges.json.sig
+          rm -f "$key" "$signature"
+          python3 tools/validate_badges.py --verify-signature
+
+      - name: Prepare static site
+        run: |
+          mkdir _site
+          cp index.html .nojekyll _site/
+          cp -R badges _site/
+
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
