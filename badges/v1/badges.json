@@ -9,7 +9,7 @@
     },
     "dev": {
       "description": "Desenvolvedor oficial do Halla",
-      "icon": "icons/dev-badge.png",
+      "icon": "icons/dev.png",
       "iconSha256": "03e5a3d642ea790f8880aa995631cf8ca4880c5d603dd597fd4d771854ae9a97",
       "name": "Desenvolvedor",
       "priority": 100
