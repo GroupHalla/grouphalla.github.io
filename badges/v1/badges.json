@@ -10,7 +10,7 @@
     "dev": {
       "description": "Desenvolvedor oficial do Halla",
       "icon": "icons/dev.png",
-      "iconSha256": "7b941d1a0392b24f448c3cec2352055ead872b6a1161ed7f6671c9be03724fb1",
+      "iconSha256": "99f5611f59bc5112d7874b46e43a05fd85dd785db748e70b0b63e7d6d673abab",
       "name": "Desenvolvedor",
       "priority": 100
     },
@@ -29,7 +29,7 @@
       "priority": 90
     }
   },
-  "updatedAt": "2026-08-12T04:10:37Z",
+  "updatedAt": "2026-08-12T04:15:00Z",
   "users": {
     "VqVCOeyPUFCvXl1fJul0DNINLTDAYjVSQJPsBMwtoUY=": [
       "dev"
