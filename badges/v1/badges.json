@@ -24,12 +24,12 @@
     "founder": {
       "description": "Fundador do projeto Halla",
       "icon": "icons/founder.png",
-      "iconSha256": "c75ece49008df9878101be952d6d9895b896cf67cf6e7f4c74841585818f8a8b",
+      "iconSha256": "fe82c4c66a5a586741a0540813076cc54377e231eb7e52ad6a9cd08ff81ff784",
       "name": "Fundador",
       "priority": 90
     }
   },
-  "updatedAt": "2026-08-12T04:30:00Z",
+  "updatedAt": "2026-08-12T14:40:00Z",
   "users": {
     "VqVCOeyPUFCvXl1fJul0DNINLTDAYjVSQJPsBMwtoUY=": [
       "dev"
