@@ -1,29 +1,87 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>Halla — Registro oficial de emblemas</title>
+  <title>Halla — Official badge registry</title>
   <style>
-    :root{font-family:Inter,system-ui,sans-serif;color:#f8fafc;background:#090814}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at top,#292152 0,#090814 48%)}main{width:min(880px,calc(100% - 32px));margin:40px auto}.panel{background:#111020e8;border:1px solid #312e55;border-radius:22px;padding:28px;box-shadow:0 24px 80px #0008}h1{margin:0 0 8px;font-size:clamp(28px,5vw,48px)}p{color:#b8b5d6;line-height:1.6}.status{display:inline-flex;gap:8px;align-items:center;color:#86efac;background:#052e1b;border:1px solid #166534;border-radius:999px;padding:7px 12px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:24px}.badge{background:#18162c;border:1px solid #36315b;border-radius:16px;padding:16px;display:flex;gap:12px;align-items:center}.badge img{width:42px;height:42px}.badge strong{display:block}.badge small{display:block;color:#9f9bbd;margin-top:4px}code{color:#c4b5fd}a{color:#a78bfa}</style>
+    :root{font-family:Inter,system-ui,sans-serif;color:#f8fafc;background:#090814}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at top,#292152 0,#090814 48%)}main{width:min(880px,calc(100% - 32px));margin:40px auto}.panel{background:#111020e8;border:1px solid #312e55;border-radius:22px;padding:28px;box-shadow:0 24px 80px #0008}h1{margin:0 0 8px;font-size:clamp(28px,5vw,48px)}p{color:#b8b5d6;line-height:1.6}.status{display:inline-flex;gap:8px;align-items:center;color:#86efac;background:#052e1b;border:1px solid #166534;border-radius:999px;padding:7px 12px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:24px}.badge{background:#18162c;border:1px solid #36315b;border-radius:16px;padding:16px;display:flex;gap:12px;align-items:center}.badge img{width:42px;height:42px}.badge strong{display:block}.badge small{display:block;color:#9f9bbd;margin-top:4px}code{color:#c4b5fd}a{color:#a78bfa}
+    .langbar{display:flex;justify-content:flex-end;gap:0;margin-bottom:14px}
+    .langbar button{background:#18162c;color:#9f9bbd;border:1px solid #36315b;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+    .langbar button:first-child{border-radius:8px 0 0 8px}
+    .langbar button:last-child{border-radius:0 8px 8px 0}
+    .langbar button[aria-pressed="true"]{background:#312e55;color:#c4b5fd;border-color:#7c6ac4}
+  </style>
 </head>
 <body><main><section class="panel">
-  <span class="status">● Registro disponível</span>
-  <h1>Emblemas oficiais do Halla</h1>
-  <p>Este domínio publica o registro assinado usado pelos clientes Halla. Os emblemas são estritamente visuais e não concedem permissões em servidores.</p>
+  <div class="langbar" role="group" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="pt" aria-pressed="false">PT</button>
+    <button type="button" data-lang="es" aria-pressed="false">ES</button>
+  </div>
+  <span class="status" data-i18n="status">● Registry available</span>
+  <h1 data-i18n="title">Official Halla badges</h1>
+  <p data-i18n="intro">This domain publishes the signed registry used by Halla clients. Badges are strictly visual and grant no permissions on servers.</p>
   <div id="badges" class="grid" aria-live="polite"></div>
-  <p>Manifesto: <a href="/badges/v1/badges.json"><code>/badges/v1/badges.json</code></a></p>
+  <p><span data-i18n="manifest">Manifest:</span> <a href="/badges/v1/badges.json"><code>/badges/v1/badges.json</code></a></p>
 </section></main>
 <script>
+/* Page strings (the badge names/descriptions themselves come from the
+ * signed badges.json manifest and are shown exactly as published). */
+const I18N = {
+  en: { status: "● Registry available", title: "Official Halla badges",
+        intro: "This domain publishes the signed registry used by Halla clients. Badges are strictly visual and grant no permissions on servers.",
+        manifest: "Manifest:", fallback: "Registry temporarily unavailable." },
+  pt: { status: "● Registro disponível", title: "Emblemas oficiais do Halla",
+        intro: "Este domínio publica o registro assinado usado pelos clientes Halla. Os emblemas são estritamente visuais e não concedem permissões em servidores.",
+        manifest: "Manifesto:", fallback: "Registro temporariamente indisponível." },
+  es: { status: "● Registro disponible", title: "Emblemas oficiales de Halla",
+        intro: "Este dominio publica el registro firmado usado por los clientes de Halla. Los emblemas son estrictamente visuales y no conceden permisos en los servidores.",
+        manifest: "Manifiesto:", fallback: "Registro temporalmente no disponible." },
+};
+let lang = "en";
+try {
+  const stored = localStorage.getItem("halla-lang");
+  if (stored === "pt" || stored === "es") lang = stored;
+} catch (e) {}
+
+function applyLang(l) {
+  lang = l;
+  try { localStorage.setItem("halla-lang", l); } catch (e) {}
+  document.documentElement.lang = l === "pt" ? "pt-BR" : l;
+  for (const el of document.querySelectorAll("[data-i18n]")) {
+    el.textContent = I18N[lang][el.dataset.i18n];
+  }
+  for (const b of document.querySelectorAll(".langbar button")) {
+    b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+  }
+  renderBadges(window.__badgesData);
+}
+
+let badgesData = null;
+window.__badgesData = null;
+function renderBadges(data) {
+  if (data) badgesData = data;
+  const root = document.getElementById("badges");
+  if (!badgesData) return;
+  root.replaceChildren();
+  Object.entries(badgesData.badges).sort((a,b)=>b[1].priority-a[1].priority).forEach(([id,b])=>{
+   const el=document.createElement('div');el.className='badge';
+   const img=document.createElement('img');img.src='/badges/v1/'+b.icon;img.alt='';
+   const text=document.createElement('div');const strong=document.createElement('strong');strong.textContent=b.name;
+   const small=document.createElement('small');small.textContent=b.description;
+   text.append(strong,small);el.append(img,text);root.append(el);
+  });
+}
+
 fetch('/badges/v1/badges.json').then(r=>r.json()).then(data=>{
- const root=document.getElementById('badges');
- Object.entries(data.badges).sort((a,b)=>b[1].priority-a[1].priority).forEach(([id,b])=>{
-  const el=document.createElement('div');el.className='badge';
-  const img=document.createElement('img');img.src='/badges/v1/'+b.icon;img.alt='';
-  const text=document.createElement('div');const strong=document.createElement('strong');strong.textContent=b.name;
-  const small=document.createElement('small');small.textContent=b.description;
-  text.append(strong,small);el.append(img,text);root.append(el);
- });
-}).catch(()=>{document.getElementById('badges').textContent='Registro temporariamente indisponível.'});
+  window.__badgesData = data;
+  renderBadges(data);
+}).catch(()=>{document.getElementById('badges').textContent=I18N[lang].fallback});
+
+for (const b of document.querySelectorAll(".langbar button")) {
+  b.addEventListener("click", () => applyLang(b.dataset.lang));
+}
+applyLang(lang);
 </script></body></html>
